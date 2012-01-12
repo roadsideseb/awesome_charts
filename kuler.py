@@ -40,6 +40,9 @@ class Color:
         return tuple([(c * 256 if c < 256 else c) for c in
                      self.asRGB()])
 
+    def asHex(self):
+        return '#%02x%02x%02x' % self.asRGB()
+
     @classmethod
     def fromHexRGB(cls, hexrgb):
         """
