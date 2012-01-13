@@ -121,12 +121,12 @@ class Comment(object):
     @classmethod
     def from_xml(cls, xml):
         return cls(
-            datetime.datetime.strpformat(
-                xml.find('commentDate'),
+            datetime.strptime(
+                xml.find('commentDate').text,
                 DATE_FORMAT
             ),
-            xml.find('commentUserName'), 
-            xml.find('commentComments')
+            xml.find('commentUserName').text, 
+            xml.find('commentComments').text
         )
 
 class Colour(Base):
@@ -200,7 +200,7 @@ class Pattern(Base):
 
     @classmethod
     def from_xml(cls, xml):
-        inst = super(Pattern, self).from_xml(xml)
+        inst = super(Pattern, cls).from_xml(xml)
 
         for hex_colour in xml.findall('colors/hex'):
             inst.colours.append('#'+hex_colour.text.lower())
@@ -217,7 +217,7 @@ class Pattern(Base):
 class Lover(Base):
 
     def __init__(self, **kwargs):
-        super(Lovers, self).__init__(**kwargs)
+        super(Lover, self).__init__(**kwargs)
 
         self.comments = []
 
@@ -227,7 +227,7 @@ class Lover(Base):
 
     @classmethod
     def from_xml(cls, xml):
-        inst = super(Lovers, cls).from_xml(xml)
+        inst = super(Lover, cls).from_xml(xml)
 
         for comment in xml.findall('comments/comment'):
             inst.comments.append(Comment.from_xml(comment))
@@ -276,19 +276,6 @@ class ColourLovers(object):
 
     def __init__(self):
         pass
-        # colors, colors/new, colors/top, colors/random(no params)
-        # color, color/[hexcode]
-
-        # palettes, palettes/new, palettes/top, palettes/random(noparams)
-        # palette, palette/[ID]
-
-        # patterns, patterns/new, patterns/top, patterns/random(noparams)
-        # pattern, pattern/[ID]
-
-        # lovers, lovers/new, lovers/top
-        # lover/[username]
-
-        # stats/colours, stats/lovers, stats/patterns, stats/palettes
 
     def stats(self, stat_type):
         if stat_type not in ['colors', 'lovers', 'patterns', 'palettes']:

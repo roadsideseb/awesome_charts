@@ -36,12 +36,6 @@ class TestHSV(unittest.TestCase):
         self.assertEquals(hsv.saturation, 94)
         self.assertEquals(hsv.value, 42)
 
-from colourlovers import Colour
-
-class TestColour(unittest.TestCase):
-
-    pass
-
 
 from colourlovers import Base
 
@@ -60,7 +54,7 @@ class TestColour(unittest.TestCase):
     def test_from_xml(self):
         xml = ElementTree.XML(COLOUR_XML)
 
-        base = Colour.from_xml(xml)
+        colour = Colour.from_xml(xml)
 
 
 from colourlovers import Palette 
@@ -70,7 +64,27 @@ class TestPalette(unittest.TestCase):
     def test_from_xml(self):
         xml = ElementTree.XML(PALETTE_XML)
 
-        base = Palette.from_xml(xml)
+        palette = Palette.from_xml(xml)
+
+
+from colourlovers import Pattern
+
+class TestPattern(unittest.TestCase):
+
+    def test_from_xml(self):
+        xml = ElementTree.XML(PATTERN_XML)
+
+        parttern = Pattern.from_xml(xml)
+
+
+from colourlovers import Lover 
+
+class TestLover(unittest.TestCase):
+
+    def test_from_xml(self):
+        xml = ElementTree.XML(LOVER_XML)
+
+        lover = Lover.from_xml(xml)
 
 
 from colourlovers import Stat 
