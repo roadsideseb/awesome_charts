@@ -52,7 +52,7 @@ def main():
         with open(args.input, 'r') as input_file:
             for line in input_file:
 
-                if len(line.strip()) == 0:
+                if len(line.strip()) == 0 or line.startswith('#'):
                     continue
 
                 args_list = [x.strip() for x in line.strip().split(';')]
