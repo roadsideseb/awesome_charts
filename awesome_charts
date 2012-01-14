@@ -12,9 +12,6 @@ from svgplotlib.SVG import SVG, show
 
 from colourlovers import ColourLovers
 
-#import kuler as kulerapi
-#KULER_API_KEY = '1CE8EF1EA94657BA43864B9287974119'
-
 class AwesomeBar(Base):
    
     def __init__(self, title, values, labels, colors=None, **kwargs):
@@ -122,9 +119,7 @@ def get_labels_values(args_list):
             labels.append(label)
             values.append(value)
         except ValueError:
-            parser.error(
-                "cannot determine 'label:value' from '%s'" % raw_value
-            )
+            print "cannot determine 'label:value' from '%s'" % raw_value
     return labels, values
 
 def main():
@@ -176,16 +171,15 @@ def main():
                 )
                 
     cl_api = ColourLovers()
-    #kuler = kulerapi.Kuler(KULER_API_KEY)
 
     for args in batch_list:
         labels, values = get_labels_values(args.awesomeness)
-        print labels, values
 
         try:
-            palettes = cl_api.get_palette(args.palette)
+            palettes = cl_api.palette(args.palette)
         except:
-            print "Could not get palette from ColourLovers. Using default."
+            print "Could not get palette %s from ColourLovers. "  % args.palette +\
+                  "Using default."
             palettes = []
 
         colours = []
@@ -193,8 +187,6 @@ def main():
         if len(palettes) > 0:
             for hex_code in palettes[0].colours:
                 colours.append(hex_code)
-
-        print colours
 
         awesome_bar = AwesomeBar(
             args.title,
