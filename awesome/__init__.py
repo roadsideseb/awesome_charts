@@ -16,7 +16,36 @@
 # 
 # You should have received a copy of the GNU General Public License
 
+import os
 import itertools
+
+import svgplotlib 
+from svgplotlib import freetype
+from svgplotlib.Config import config
+
+## fix the problem that svgplotlib does not parse sub-directories
+if config.has_option('fonts', 'fontpaths'):
+    fontpaths = config.get('fonts', 'fontpaths').split(';')
+else:
+    defaults = config.defaults() 
+    fontpaths = defaults['defaultfonts'], defaults['sysfonts']
+
+for fontpath in fontpaths:
+    for dirpath, dirnames, filenames in os.walk(fontpath):
+        for filename in filenames:
+            name, ext = os.path.splitext(filename)
+            if ext.lower() not in frozenset(('.ttf', '.otf')):
+                continue
+            
+            path = os.path.join(dirpath, filename)
+            try:
+                font = freetype.FT2Font(path)
+                svgplotlib._fonts.setdefault(font.family_name, {})[font.style_name] = path
+            except freetype.FontError:
+                ## ignore fonts that cannot be opened
+                pass
+
+print svgplotlib._fonts
 
 from svgplotlib import Base
 from svgplotlib import getFont
