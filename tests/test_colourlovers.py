@@ -1,5 +1,24 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# python-colourlovers - A Python API to http://www.colourlovers.com 
+# Copyright (C) 2012 Sebastian Vetter
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
+from datetime import datetime
 
 try:
     from xml.etree import ElementTree
@@ -46,6 +65,15 @@ class TestBase(unittest.TestCase):
 
         base = Base.from_xml(xml)
 
+    def test_name_from_tag(self):
+        name = Base.name_from_tag('userNameTest')
+        self.assertEquals(name, 'user_name_test')
+
+        name = Base.name_from_tag('dateCreated')
+        self.assertEquals(name, 'date_created')
+
+        name = Base.name_from_tag('id')
+        self.assertEquals(name, 'id')
 
 from colourlovers import Colour 
 
@@ -55,6 +83,30 @@ class TestColour(unittest.TestCase):
         xml = ElementTree.XML(COLOUR_XML)
 
         colour = Colour.from_xml(xml)
+        self.assertEquals(colour.id, 903893)
+        self.assertEquals(colour.title, u'wet dirt')
+        self.assertEquals(colour.user_name, u'jessicabrown')
+        self.assertEquals(colour.num_views, 0)
+        self.assertEquals(colour.num_votes, 0)
+        self.assertEquals(colour.num_comments, 0)
+        self.assertEquals(colour.num_hearts, 0)
+        self.assertEquals(colour.rank, 903853)
+        self.assertEquals(colour.date_created, datetime(2008, 3, 17, 11, 22, 21))
+        self.assertEquals(colour.hex, '#6b4106')
+        
+        self.assertEquals(colour.rgb.red, 107)
+        self.assertEquals(colour.rgb.green, 65)
+        self.assertEquals(colour.rgb.blue, 6)
+
+        self.assertEquals(colour.hsv.hue, 35)
+        self.assertEquals(colour.hsv.saturation, 94)
+        self.assertEquals(colour.hsv.value, 42)
+
+        self.assertEquals(colour.description, None) 
+        self.assertEquals(colour.url, 'http://www.colourlovers.com/color/6B4106/wet_dirt')
+        self.assertEquals(colour.image_url, u'http://www.colourlovers.com/img/6B4106/100/100/wet_dirt.png')
+        self.assertEquals(colour.badge_url, u'http://www.colourlovers.com/images/badges/c/903/903893_wet_dirt.png')
+        self.assertEquals(colour.api_url, u'http://www.colourlovers.com/api/color/6B4106')
 
 
 from colourlovers import Palette 
@@ -66,6 +118,45 @@ class TestPalette(unittest.TestCase):
 
         palette = Palette.from_xml(xml)
 
+        self.assertEquals(palette.id, 12345)
+        self.assertEquals(palette.title, 'be my boy')
+        self.assertEquals(palette.user_name, 'sinta schneider')
+        self.assertEquals(palette.num_views, 1052)
+        self.assertEquals(palette.num_votes, 37)
+        self.assertEquals(palette.num_comments, 13)
+        self.assertEquals(palette.num_hearts, 4.5)
+        self.assertEquals(palette.rank, 1)
+        self.assertEquals(palette.date_created, datetime(2008, 3, 1, 16, 19, 21))
+
+        self.assertEquals(len(palette.colours), 5)
+        self.assertEquals(palette.colours, [
+            '#423238',
+            '#f5de8c',
+            '#c8d197',
+            '#b3702d',
+            '#eb2138'
+        ])
+
+        self.assertEquals(palette.color_widths, [0.2, 0.2, 0.2, 0.2, 0.2])
+        
+        self.assertEquals(palette.description, None)
+        self.assertEquals(
+            palette.url, 
+            'http://www.colourlovers.com/palette/293826/be_my_boy'
+        )
+        self.assertEquals(
+            palette.image_url,
+            'http://www.colourlovers.com/paletteImg/423238/F5DE8C/C8D197/B3702D/EB2138/be_my_boy.png'
+        )
+        self.assertEquals(
+            palette.badge_url,
+            'http://www.colourlovers.com/images/badges/p/293/293826_be_my_boy.png'
+        )
+        self.assertEquals(
+            palette.api_url,
+            'http://www.colourlovers.com/api/palette/293826'
+        )
+
 
 from colourlovers import Pattern
 
@@ -74,7 +165,31 @@ class TestPattern(unittest.TestCase):
     def test_from_xml(self):
         xml = ElementTree.XML(PATTERN_XML)
 
-        parttern = Pattern.from_xml(xml)
+        pattern = Pattern.from_xml(xml)
+
+        self.assertEquals(pattern.id, 12345)
+        self.assertEquals(pattern.title, 'Tenderness.')
+        self.assertEquals(pattern.user_name, 'not.an.am.person')
+        self.assertEquals(pattern.num_views, 617)
+        self.assertEquals(pattern.num_votes, 32)
+        self.assertEquals(pattern.num_comments, 14)
+        self.assertEquals(pattern.num_hearts, 4.5)
+        self.assertEquals(pattern.rank, 1)
+        self.assertEquals(pattern.date_created, datetime(2008, 3, 1, 6, 43, 38))
+
+        self.assertEquals(len(pattern.colours), 5)
+        self.assertEquals(pattern.colours, [
+            '#c6c5ac', 
+            '#cdb89f', 
+            '#d4aa93', 
+            '#b8e0c5', 
+            '#bfd3b8'
+        ])
+        self.assertEquals(pattern.description, None)
+        self.assertEquals(pattern.url, 'http://www.colourlovers.com/pattern/49471/Tenderness.')
+        self.assertEquals(pattern.image_url, 'http://colourlovers.com.s3.amazonaws.com/images/patterns/49/49471.png')
+        self.assertEquals(pattern.badge_url, 'http://www.colourlovers.com/images/badges/n/49/49471_Tenderness..png')
+        self.assertEquals(pattern.api_url, 'http://www.colourlovers.com/api/pattern/49471')
 
 
 from colourlovers import Lover 
@@ -85,6 +200,27 @@ class TestLover(unittest.TestCase):
         xml = ElementTree.XML(LOVER_XML)
 
         lover = Lover.from_xml(xml)
+
+        self.assertEquals(lover.user_name, u'electrikmönk')
+        self.assertEquals(lover.date_registered, datetime(2005, 8, 7, 6, 45, 47))
+        self.assertEquals(lover.date_last_active, datetime(2008, 3, 16, 21, 2, 1))
+        self.assertEquals(lover.rating, 554159)
+        self.assertEquals(lover.location, u'#FF0000stick, LA, US')
+        self.assertEquals(lover.num_colors, 3498)
+        self.assertEquals(lover.num_palettes, 2775)
+        self.assertEquals(lover.num_patterns, 36)
+        self.assertEquals(lover.num_comments_made, 7201)
+        self.assertEquals(lover.num_lovers, 710)
+        self.assertEquals(lover.num_comments_on_profile, 672)
+
+        self.assertEquals(len(lover.comments), 1)
+        comment = lover.comments[0]
+        self.assertEquals(comment.comment_date, datetime(2008, 3, 10, 5, 10, 58))
+        self.assertEquals(comment.comment_user_name, u'mashedpotato')
+        self.assertEquals(comment.comment_comments, u'you are so awesome. :x ')
+
+        self.assertEquals(lover.url, u'http://www.colourlovers.com/lover/electrikmonk')
+        self.assertEquals(lover.api_url, u'http://www.colourlovers.com/api/lover/electrikmonk')
 
 
 from colourlovers import Stat 
@@ -113,7 +249,8 @@ class TestColourLovers(unittest.TestCase):
             '6B410'
         )
 
-COLOUR_XML = """<color>
+COLOUR_XML = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<color>
   <id>903893</id>
   <title><![CDATA[wet dirt]]></title>
   <userName><![CDATA[jessicabrown]]></userName>
@@ -141,7 +278,8 @@ COLOUR_XML = """<color>
   <apiUrl>http://www.colourlovers.com/api/color/6B4106</apiUrl>
 </color>"""
 
-PALETTE_XML = """<palette>
+PALETTE_XML = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<palette>
     <id>12345</id>
     <title><![CDATA[be my boy]]></title>
     <userName><![CDATA[sinta schneider]]></userName>
@@ -167,7 +305,8 @@ PALETTE_XML = """<palette>
     <apiUrl>http://www.colourlovers.com/api/palette/293826</apiUrl>
   </palette>"""
 
-PATTERN_XML = """<pattern>
+PATTERN_XML = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pattern>
     <id>12345</id>
     <title><![CDATA[Tenderness.]]></title>
     <userName><![CDATA[not.an.am.person]]></userName>
@@ -191,9 +330,10 @@ PATTERN_XML = """<pattern>
     <apiUrl>http://www.colourlovers.com/api/pattern/49471</apiUrl>
   </pattern>"""
 
-LOVER_XML = """<lover>
+LOVER_XML = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<lover>
     <id>12345</id>
-    <userName><![CDATA[electrikmonk]]></userName>
+    <userName><![CDATA[electrikmönk]]></userName>
     <dateRegistered>2005-08-07 6:45:47</dateRegistered>
     <dateLastActive>2008-03-16 21:02:01</dateLastActive>
     <rating>554159</rating>
